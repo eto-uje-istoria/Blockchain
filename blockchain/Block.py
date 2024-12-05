@@ -19,7 +19,6 @@
 
 import hashlib
 import json
-from typing import Union
 from .CryptoUtils import CryptoUtils
 from Crypto.PublicKey.RSA import RsaKey
 

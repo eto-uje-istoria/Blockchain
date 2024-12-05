@@ -20,7 +20,6 @@
 
 import json
 from typing import List
-
 from .Block import Block
 from .CryptoUtils import CryptoUtils
 from Crypto.PublicKey.RSA import RsaKey

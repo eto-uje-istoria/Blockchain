@@ -19,7 +19,6 @@
 """
 
 import json
-from typing import Union
 from Crypto.Hash import SHA256
 from Crypto.Signature import pkcs1_15
 from Crypto.PublicKey.RSA import RsaKey

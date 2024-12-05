@@ -18,6 +18,8 @@ if __name__ == "__main__":
                          private_key=private_key)
     blockchain.add_block(data={"name": "Alex", "city": "Moscow"},
                          private_key=private_key)
+    blockchain.add_block(data={"name": "Sue", "city": "Boston"},
+                         private_key=private_key)
 
     # Вывод цепочки
     blockchain.display_chain()
@@ -34,4 +36,4 @@ if __name__ == "__main__":
 
     # Проверка целостности
     print(f"\nЦепочка валидна: {blockchain.is_chain_valid(public_key)}\n")
-    # >>> False
+    # >>> False (Хэш блока 1 поврежден)

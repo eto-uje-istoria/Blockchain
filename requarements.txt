@@ -1,0 +1,2 @@
+pycryptodome==3.21
+mypy==1.13.0

@@ -18,10 +18,10 @@
 4. Каждый блок сохраняет ссылку на предыдущий блок через его хеш, обеспечивая тем самым неизменность данных.
 5. Цепочка блоков проверяется на целостность и на отсутствие изменений.
 
-<figure style="text-align: center;">
+<div align="center">
     <img src="resources/scheme-v-1.png" alt="blockchain-scheme-v1" style="display: block; margin: 0 auto;"/>
-    <figcaption>Схема Блокчейна</figcaption>
-</figure>
+    <p>Схема Блокчейна</p>
+</div>
 
 ### Пример блока (JSON):
 

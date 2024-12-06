@@ -7,10 +7,10 @@ Blockchain — это децентрализованный и распредел
 
 ## Версии проекта
 
-- **[Версия 1: Локальный Blockchain](https://github.com/yourusername/blockchain-project/tree/version-1)**  
+- **[Версия 1: Локальный Blockchain](https://github.com/eto-uje-istoria/Blockchain/tree/version-1)**  
   В этой версии блокчейн реализован локально. Ключи генерируются, а данные хранятся на вашем локальном устройстве.
 
-- **[Версия 2: Blockchain с внешним API (Арбитр)](https://github.com/yourusername/blockchain-project/tree/version-2)**  
+- **[Версия 2: Blockchain с внешним API (Арбитр)](https://github.com/eto-uje-istoria/Blockchain/tree/version-2)**  
   В версии 2 блокчейн использует внешнее API (Арбитр) для подписи блоков, что добавляет дополнительный уровень безопасности и децентрализации.
 
 ## Как начать

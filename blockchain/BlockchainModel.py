@@ -2,8 +2,8 @@
 .. rubric:: Модуль для реализации модели блокчейна.
 
 Автор: Galiakhmetov Niyaz (GitHub: eto-uje-istoria)
-Дата создания: 05.12.2024
-Версия: 1.0.0
+Дата создания: 06.12.2024
+Версия: 2.0.0
 
 Описание:
 Этот модуль содержит класс `BlockchainModel`, который предоставляет функционал
@@ -75,12 +75,14 @@ class BlockchainModel:
         self.chain.append(new_block)
         self.save_chain()
 
-    def is_chain_valid(self, public_key: RsaKey) -> bool:
+    def is_chain_valid(self, local_public_key: RsaKey, remote_public_key: RsaKey) -> bool:
         """
         Проверка целостности цепочки блоков.
 
-        :param public_key: Публичный ключ для проверки подписей.
-        :type public_key: RsaKey
+        :param local_public_key: Локальный публичный ключ для проверки данных.
+        :type local_public_key: RsaKey
+        :param remote_public_key: Удалённый публичный ключ для проверки хэшей.
+        :type remote_public_key: RsaKey
         :return: True, если цепочка валидна, иначе False.
         :rtype: bool
         """
@@ -94,12 +96,12 @@ class BlockchainModel:
                 return False
 
             # Проверяем подпись данных
-            if not CryptoUtils.verify_data_signature(current_block.data, current_block.data_signature, public_key):
+            if not CryptoUtils.verify_data_signature(current_block.data, current_block.data_signature, local_public_key):
                 print(f"Подпись данных блока {current_block.index} недействительна.")
                 return False
 
             # Проверяем подпись хэша
-            if not CryptoUtils.verify_hash_signature(current_block.hash, current_block.hash_signature, public_key):
+            if not CryptoUtils.verify_hash_signature(current_block.hash, current_block.hash_signature, current_block.timestamp, remote_public_key):
                 print(f"Подпись хэша блока {current_block.index} недействительна.")
                 return False
 

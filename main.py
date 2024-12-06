@@ -1,12 +1,13 @@
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
-from blockchain import BlockchainModel
+from blockchain import BlockchainModel, ArbiterAPI
 
 if __name__ == "__main__":
 
     # Генерация ключей
     private_key: RsaKey = RSA.generate(2048)
-    public_key: RsaKey = private_key.publickey()
+    local_public_key: RsaKey = private_key.publickey()
+    remote_public_key: RsaKey = ArbiterAPI.get_public_key()
 
     # Создание блокчейна
     blockchain: BlockchainModel = BlockchainModel()
@@ -25,15 +26,15 @@ if __name__ == "__main__":
     blockchain.display_chain()
 
     # Сохранение отдельных блоков
-    blockchain.save_block(1)
+    blockchain.save_block(2)
 
     # Проверка целостности
-    print(f"\nЦепочка валидна: {blockchain.is_chain_valid(public_key)}\n")
+    print(f"\nЦепочка валидна: {blockchain.is_chain_valid(local_public_key, remote_public_key)}\n")
     # >>> True
 
     # Изменение данных в блоке
     blockchain.chain[1].data = {"name": "Jack_1", "city": "New-York_1"}
 
     # Проверка целостности
-    print(f"\nЦепочка валидна: {blockchain.is_chain_valid(public_key)}\n")
+    print(f"\nЦепочка валидна: {blockchain.is_chain_valid(local_public_key, remote_public_key)}\n")
     # >>> False (Хэш блока 1 поврежден)

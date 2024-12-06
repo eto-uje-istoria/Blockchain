@@ -2,8 +2,8 @@
 .. rubric:: Модуль для криптографических операций в блокчейне.
 
 Автор: Galiakhmetov Niyaz (GitHub: eto-uje-istoria)
-Дата создания: 05.12.2024
-Версия: 1.0.0
+Дата создания: 06.12.2024
+Версия: 2.0.0
 
 Описание:
 Этот модуль содержит утилиты для криптографической обработки данных,
@@ -17,8 +17,9 @@
 - Crypto.Signature.pkcs1_15: для подписания и проверки подписей
 - Crypto.PublicKey.RSA: для работы с RSA-ключами
 """
-
+import binascii
 import json
+from .ArbiterAPI import ArbiterAPI
 from Crypto.Hash import SHA256
 from Crypto.Signature import pkcs1_15
 from Crypto.PublicKey.RSA import RsaKey
@@ -33,6 +34,8 @@ class CryptoUtils:
         Класс предоставляет методы для подписания данных и хэшей, а также
         для проверки подписей с использованием RSA-ключей.
     """
+
+    TIMESTAMP: str = None
 
     @staticmethod
     def sign_data(data: dict[str, str], private_key: RsaKey) -> str:
@@ -60,16 +63,14 @@ class CryptoUtils:
             raise ValueError("Ошибка при сериализации данных или типе ключа.") from e
 
     @staticmethod
-    def sign_hash(hash_: str, private_key: RsaKey) -> str:
+    def sign_hash(hash_: str) -> str:
         """
-        Подписание хэша с использованием приватного ключа.
+        Подписание хэша с использованием приватного ключа от Арбитра (API).
 
-        Этот метод подписывает хэш с использованием приватного ключа RSA.
+        Этот метод подписывает хэш Арбитром (API).
 
         :param hash_: Хэш, который нужно подписать.
         :type hash_: str
-        :param private_key: Приватный ключ RSA для подписи.
-        :type private_key: RsaKey
         :return: Подпись хэша в виде шестнадцатеричной строки.
         :rtype: str
 
@@ -77,9 +78,10 @@ class CryptoUtils:
         :raises: :class:`TypeError`: Если ключ имеет неподдерживаемый тип.
         """
         try:
-            hash_object: SHA256Hash = SHA256.new(hash_.encode())
-            signer: PKCS115_SigScheme = pkcs1_15.new(private_key)
-            return signer.sign(hash_object).hex()
+            response = ArbiterAPI.get_signature(hash_)
+            hash_signature = response['signature']
+            CryptoUtils.TIMESTAMP = response['ts']
+            return hash_signature
         except (ValueError, TypeError) as e:
             raise ValueError("Ошибка при обработке хэша или типе ключа.") from e
 
@@ -111,7 +113,7 @@ class CryptoUtils:
             raise ValueError("Ошибка при проверке подписи данных или типе ключа.") from e
 
     @staticmethod
-    def verify_hash_signature(hash_: str, signature: str, public_key: RsaKey) -> bool:
+    def verify_hash_signature(hash_: str, signature: str, timestamp: str, remote_public_key: RsaKey) -> bool:
         """
         Проверка подписи хэша с использованием публичного ключа.
 
@@ -122,17 +124,24 @@ class CryptoUtils:
         :type hash_: str
         :param signature: Подпись хэша в шестнадцатеричной строке.
         :type signature: str
-        :param public_key: Публичный ключ RSA для проверки подписи.
-        :type public_key: RsaKey
+        :param remote_public_key: Публичный ключ от Арбитра
+        :type remote_public_key: `RsaKey`
+        :param timestamp: Дата подписи хэша
+        :type timestamp: str
         :return: True, если подпись действительна, иначе False.
         :rtype: bool
 
         :raises: :class:`ValueError`: Если подпись не может быть проверена.
         :raises: :class:`TypeError`: Если ключ имеет неподдерживаемый тип.
         """
+        token = timestamp.encode('utf-8') + binascii.unhexlify(hash_)
+        hash_object: SHA256Hash = SHA256.new(token)
         try:
-            hash_object: SHA256Hash = SHA256.new(hash_.encode())
-            pkcs1_15.new(public_key).verify(hash_object, bytes.fromhex(signature))
+            pkcs1_15.new(remote_public_key).verify(hash_object, bytes.fromhex(signature))
             return True
         except (ValueError, TypeError) as e:
             raise ValueError("Ошибка при проверке подписи хэша или типе ключа.") from e
+
+    @staticmethod
+    def get_timestamp() -> str:
+        return CryptoUtils.TIMESTAMP

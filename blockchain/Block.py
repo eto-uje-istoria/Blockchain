@@ -2,8 +2,8 @@
 .. rubric:: Модуль для реализации блока в блокчейне.
 
 Автор: Galiakhmetov Niyaz (GitHub: eto-uje-istoria)
-Дата создания: 05.12.2024
-Версия: 1.0.0
+Дата создания: 06.12.2024
+Версия: 2.0.0
 
 Описание:
 Этот модуль содержит класс `Block`, который используется для представления
@@ -42,6 +42,7 @@ class Block:
         :ivar data_signature: подпись данных
         :ivar hash: хэш текущего блока
         :ivar hash_signature: подпись хэша блока
+        :ivar timestamp: дата подписи хэша блока
         """
 
     def __init__(self, index: int, data: dict[str, str], prev_hash: str, private_key: RsaKey) -> None:
@@ -62,7 +63,8 @@ class Block:
         self.prev_hash = prev_hash
         self.data_signature = CryptoUtils.sign_data(data, private_key)
         self.hash = self.calculate_hash()
-        self.hash_signature = CryptoUtils.sign_hash(self.hash, private_key)
+        self.hash_signature = CryptoUtils.sign_hash(self.hash)
+        self.timestamp = CryptoUtils.get_timestamp()
 
     def calculate_hash(self) -> str:
         """

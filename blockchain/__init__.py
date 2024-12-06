@@ -1,3 +1,4 @@
 from .Block import Block
-from .BlockchainModel import BlockchainModel
+from .ArbiterAPI import ArbiterAPI
 from .CryptoUtils import CryptoUtils
+from .BlockchainModel import BlockchainModel
